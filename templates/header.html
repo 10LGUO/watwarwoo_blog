@@ -1,0 +1,63 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+
+    <!-- 导航栏商标 -->
+    <a class="navbar-brand" href="#">watwarwoo</a>
+
+    <!-- 导航入口 -->
+    <div>
+      <ul class="navbar-nav">
+        <!-- 条目 -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'article:article_create'%}">war</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'article:article_list' %}">what</a>
+        </li>
+        {% if user.is_authenticated %}
+          <li class='nav-item dropdown'>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ user.username }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href='{% url "userprofile:edit" user.id %}'>user profile</a>
+              <a class="dropdown-item" href="#" onclick="user_delete()">delete user</a>
+              <a class="dropdown-item" href='{% url "userprofile:logout" %}'>log out</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'userprofile:login' %}">login</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+{% if user.is_authenticated %}
+<form
+    style="display:none;"
+    id="user_delete"
+    action="{% url 'userprofile:delete' user.id %}"
+    method="POST"
+>
+{% csrf_token %}
+    <button type="submit">submit</button>
+</form>
+    <script>
+        function user_delete() {
+            // 调用layer弹窗组件
+            layer.open({
+                title: "deletion confirm",
+                content: "confirm deletion?",
+                yes: function(index, layero) {
+                    $('form#user_delete button').click();
+                    layer.close(index);
+                },
+            })
+        }
+    </script>
+{% endif %}
